@@ -2,3 +2,4 @@ pyrogram
 python-dotenv
 openai
 transformers
+aiohttp
