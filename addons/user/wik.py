@@ -9,10 +9,10 @@ async def bot(client, message):
         return
 
     query = " ".join(message.command[1:])
-    url = f"https://es.m.wikipedia.org/w/index.php?search={query}&title=Especial%3ABuscar&profile=advanced&fulltext=1&ns0=1&ns100=1&ns104=1"
+    search_url = f"https://es.m.wikipedia.org/w/index.php?search={query}&title=Especial%3ABuscar&profile=advanced&fulltext=1&ns0=1&ns100=1&ns104=1"
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
+        async with session.get(search_url) as response:
             if response.status != 200:
                 await message.reply_text("Hubo un problema al buscar en Wikipedia.")
                 return
@@ -24,13 +24,15 @@ async def bot(client, message):
         await message.reply_text("No se encontraron resultados.")
         return
 
+    result_title = result.get_text(strip=True)
     result_link = f"https://es.m.wikipedia.org{result.a['href']}"
 
-    async with session.get(result_link) as response:
-        if response.status != 200:
-            await message.reply_text("Hubo un problema al obtener el contenido del artículo.")
-            return
-        article_content = await response.text()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(result_link) as response:
+            if response.status != 200:
+                await message.reply_text("Hubo un problema al obtener el contenido del artículo.")
+                return
+            article_content = await response.text()
 
     article_soup = BeautifulSoup(article_content, 'html.parser')
     paragraphs = article_soup.find_all('p')
@@ -42,7 +44,7 @@ async def bot(client, message):
 
     formatted_result = wik.format(
         busqueda=query,
-        result=f"<a href='{result_link}'>{result.get_text(strip=True)}</a>",
+        result=f"<a href='{result_link}'>{result_title}</a>",
         resultado=full_text
     )
     await message.reply_text(formatted_result, disable_web_page_preview=True)
