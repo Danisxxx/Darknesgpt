@@ -19,7 +19,7 @@ Tool: Search Google [ OFF ❌ ]
 Cmd: $go
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━
-Tool: Search Wikipedia [ OFF ❌ ]
+Tool: Search Wikipedia [ PENDIENTE ]
 Cmd: $wik
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━</b>'''
@@ -41,15 +41,17 @@ Dev: @Exzzex ✅
 Dev Note: Hola Esto es un Bot, Creado Especialmente con fines Educativos como para hacer tus tareas, trabajos preguntas etc
 ━━━━━
 Darkness Updates:
-Version: 1.0.0 [✅]
+Version: 1.0.0.0 [✅]
 Created: 17/12/2024 [✅]
 ━━━━━━━━━━━━━━━━━
 Report problems to: @Exzzex</b>'''
 
 dbtext = '''<b>OYE! NO ESTAS REGISTRADO EN EL BOT USA /START PARA REGISTRARTE¡</b>'''
 
-search = '''<b>Search Google Result: {busqueda} Result: {result}
+wik = '''<b>Search Wikipedia Result: {busqueda} Result: {result}
 
 Resultado: {resultado}<b>'''
+
+
 
 
