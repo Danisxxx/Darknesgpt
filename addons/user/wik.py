@@ -1,22 +1,20 @@
 from configs._def_main_ import *
 import aiohttp
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 def check_tool_status(tool_name):
     try:
-        with open("/storage/emulated/0/Documents/Dark/plantillas/tools.txt", "r") as file:
+        with open("plantillas/tools.txt", "r") as file:
             for line in file:
                 if line.startswith(f"{tool_name} ="):
                     status = line.split("=", 1)[1].strip()
-                    return status == "ONN ✅"  # Solo devuelve True si está activado
+                    return status == "ONN ✅"
     except FileNotFoundError:
         return False
     return False
 
 @rex('wik')
 async def bot(client, message):
-    # Verifica el estado del comando 'wik'
     if not check_tool_status("wik"):
         formatted_disabled = Comm.format(
             tools="wik",
