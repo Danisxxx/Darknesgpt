@@ -19,7 +19,7 @@ Tool: Search Google [ OFF ❌ ]
 Cmd: $go
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━
-Tool: Search Wikipedia [ PENDIENTE ]
+Tool: Search Wikipedia [ ONN ]
 Cmd: $wik
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━</b>'''
