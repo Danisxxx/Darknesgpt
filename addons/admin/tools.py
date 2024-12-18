@@ -17,7 +17,7 @@ def update_tools_status(tool_name, status):
             else:
                 updated_lines.append(line)
 
-        if not tool_found:  # Si la herramienta no existe en tools.txt, agregarla
+        if not tool_found:  
             updated_lines.append(f"{tool_name} = {status}\n")
 
         with open(tools_file, "w") as file:
@@ -37,7 +37,6 @@ async def tools_command(client, message):
     tool_name = message.command[1]
     reason = " ".join(message.command[2:]) if len(message.command) > 2 else "No especificado"
 
-    # Validar privilegios del usuario desde la base de datos
     conn = sqlite3.connect("db/user.db")
     cursor = conn.cursor()
     user_id = message.from_user.id
@@ -54,7 +53,7 @@ async def tools_command(client, message):
 
     if command == "off":
         if update_tools_status(tool_name, "OFF ❌"):
-            from plantillas.plant import Comm  # Importar plantilla Comm
+            
             formatted_message = Comm.format(
                 tools=tool_name,
                 date=datetime.now().strftime('%d-%m-%Y'),
