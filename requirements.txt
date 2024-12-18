@@ -4,3 +4,4 @@ openai
 transformers
 aiohttp
 beautifulsoup4
+tgcrypto
