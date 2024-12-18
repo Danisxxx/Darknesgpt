@@ -5,13 +5,19 @@ from bs4 import BeautifulSoup
 @rex('wik')
 async def bot(client, message):
     if len(message.command) < 2:
-        await message.reply_text("Por favor, proporciona un término de búsqueda.")
+        await message.reply_text(
+            "Por favor, proporciona un término de búsqueda.",
+            reply_to_message_id=message.id
+        )
         return
 
     query = " ".join(message.command[1:])
     search_url = f"https://es.m.wikipedia.org/w/index.php?search={query}&title=Especial%3ABuscar&profile=advanced&fulltext=1&ns0=1&ns100=1&ns104=1"
 
-    loading_message = await message.reply_text("Buscando contenido...")
+    loading_message = await message.reply_text(
+        "Buscando contenido...",
+        reply_to_message_id=message.id
+    )
 
     try:
         async with aiohttp.ClientSession() as session:
@@ -53,4 +59,6 @@ async def bot(client, message):
         await loading_message.edit_text(formatted_result, disable_web_page_preview=True)
 
     except Exception as e:
-        await loading_message.edit_text("Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.")
+        await loading_message.edit_text(
+            "Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde."
+        )
