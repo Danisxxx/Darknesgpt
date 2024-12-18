@@ -20,19 +20,29 @@ async def bot(client, message):
 
     soup = BeautifulSoup(html_content, 'html.parser')
     result = soup.find('div', class_='mw-search-result-heading')
-    snippet = soup.find('div', class_='searchresult')
-
-    if not result or not snippet:
+    if not result:
         await message.reply_text("No se encontraron resultados.")
         return
 
-    result_title = result.get_text(strip=True)
     result_link = f"https://es.m.wikipedia.org{result.a['href']}"
-    snippet_text = snippet.get_text(strip=True)
+
+    async with session.get(result_link) as response:
+        if response.status != 200:
+            await message.reply_text("Hubo un problema al obtener el contenido del artículo.")
+            return
+        article_content = await response.text()
+
+    article_soup = BeautifulSoup(article_content, 'html.parser')
+    paragraphs = article_soup.find_all('p')
+    full_text = "\n".join([p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True)])
+
+    if not full_text:
+        await message.reply_text("El artículo no contiene información suficiente.")
+        return
 
     formatted_result = wik.format(
         busqueda=query,
-        result=f"<a href='{result_link}'>{result_title}</a>",
-        resultado=snippet_text
+        result=f"<a href='{result_link}'>{result.get_text(strip=True)}</a>",
+        resultado=full_text
     )
     await message.reply_text(formatted_result, disable_web_page_preview=True)
