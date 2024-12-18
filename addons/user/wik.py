@@ -1,9 +1,33 @@
 from configs._def_main_ import *
 import aiohttp
 from bs4 import BeautifulSoup
+from datetime import datetime
+
+def check_tool_status(tool_name):
+    try:
+        with open("/storage/emulated/0/Documents/Dark/plantillas/tools.txt", "r") as file:
+            for line in file:
+                if line.startswith(f"{tool_name} ="):
+                    status = line.split("=", 1)[1].strip()
+                    return status == "ONN ✅"
+    except FileNotFoundError:
+        return False
+    return False
 
 @rex('wik')
 async def bot(client, message):
+    if not check_tool_status("wik"):
+        formatted_disabled = Comm.format(
+            tools="wik",
+            date="{date}",
+            reason="{reason}"
+        )
+        await message.reply_text(
+            formatted_disabled,
+            reply_to_message_id=message.id
+        )
+        return
+
     if len(message.command) < 2:
         await message.reply_text(
             "Por favor, proporciona un término de búsqueda.",
@@ -56,9 +80,9 @@ async def bot(client, message):
             result=f"<a href='{result_link}'>{result_title}</a>",
             resultado=full_text
         )
-        await loading_message.edit_text(formatted_result, disable_web_page_preview=True)
-
-    except Exception as e:
         await loading_message.edit_text(
-            "Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde."
+            formatted_result,
+            disable_web_page_preview=True
         )
+    except Exception as e:
+        await loading_message.edit_text("Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.")

@@ -52,6 +52,9 @@ wik = '''<b>Search Wikipedia Result: {busqueda} Result: {result}
 
 Resultado: {resultado}</b>'''
 
+Comm = '''<b>🔴 Tools {tools} Apagado
+[後] Review: {date}
+[後] Razon: {reason}</b>'''
 
 
 
