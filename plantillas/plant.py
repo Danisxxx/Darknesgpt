@@ -15,22 +15,22 @@ Dev By: <code>@Exzzex</code></b>'''
 
 tools = '''<b>TOOLS [1/1]
 ━━━━━━━━━━━━━━━━━
-Tool: Search Google [ ON ✅ ]
+Tool: Search Google [ OFF ❌ ]
 Cmd: $go
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━
-Tool: Search Wikipedia [ ON ✅ ]
+Tool: Search Wikipedia [ OFF ❌ ]
 Cmd: $wik
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━</b>'''
 
 tools2 = '''<b>TOOLS [2/2]
 ━━━━━━━━━━━━━━━━━
-Tool: Deletr Cache [ ON ✅ ]
+Tool: Deletr Cache [ OFF ❌ ]
 Cmd: $delca
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━
-Tool: Search Incognito [ ON ✅ ]
+Tool: Search Incognito [ OFF ❌ ]
 Cmd: $inc
 Reason: No Reason Added
 ━━━━━━━━━━━━━━━━━</b>'''
