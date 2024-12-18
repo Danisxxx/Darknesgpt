@@ -1,5 +1,4 @@
-from configs._def_main_ import rex
-from plantillas.plant import wik
+from configs._def_main_ import *
 import aiohttp
 from bs4 import BeautifulSoup
 
