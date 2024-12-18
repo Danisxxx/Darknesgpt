@@ -9,13 +9,14 @@ def check_tool_status(tool_name):
             for line in file:
                 if line.startswith(f"{tool_name} ="):
                     status = line.split("=", 1)[1].strip()
-                    return status == "ONN ✅"
+                    return status == "ONN ✅"  # Solo devuelve True si está activado
     except FileNotFoundError:
         return False
     return False
 
 @rex('wik')
 async def bot(client, message):
+    # Verifica el estado del comando 'wik'
     if not check_tool_status("wik"):
         formatted_disabled = Comm.format(
             tools="wik",
