@@ -30,5 +30,5 @@ async def bot(client, message):
     result_link = f"https://es.m.wikipedia.org{result.a['href']}"
     snippet_text = snippet.get_text(strip=True)
 
-    formatted_result = ms.wik.format(busqueda=query, result=f"<a href='{result_link}'>{result_title}</a>", resultado=snippet_text[:1000])
+    formatted_result = wik.format(busqueda=query, result=f"<a href='{result_link}'>{result_title}</a>", resultado=snippet_text[:1000])
     await message.reply_text(formatted_result, disable_web_page_preview=True)
