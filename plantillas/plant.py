@@ -41,7 +41,7 @@ Dev: @Exzzex ✅
 Dev Note: Hola Esto es un Bot, Creado Especialmente con fines Educativos como para hacer tus tareas, trabajos preguntas etc
 ━━━━━
 Darkness Updates:
-Version: 1.0.0.0 [✅]
+Version: 1.0.0 [✅]
 Created: 17/12/2024 [✅]
 ━━━━━━━━━━━━━━━━━
 Report problems to: @Exzzex</b>'''
