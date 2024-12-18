@@ -3,3 +3,4 @@ python-dotenv
 openai
 transformers
 aiohttp
+beautifulsoup4
