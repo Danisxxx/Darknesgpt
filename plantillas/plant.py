@@ -38,7 +38,7 @@ Reason: No Reason Added
 info = '''<b>Darkness GPT INFOR:
 ━━━━━
 Dev: @Exzzex ✅
-Dev Note: Hola Esto es un Bot Creado Especialmente con fines Educativos como para hacer tus tareas, trabajos preguntas etc
+Dev Note: Hola Esto es un Bot, Creado Especialmente con fines Educativos como para hacer tus tareas, trabajos preguntas etc
 ━━━━━
 Darkness Updates:
 Version: 1.0.0 [✅]
