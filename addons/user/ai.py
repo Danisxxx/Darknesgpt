@@ -1,13 +1,18 @@
 from configs._def_main_ import *
-from transformers import pipeline
+import openai
+import os
 
-generator = pipeline('text-generation', model='gpt2')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 @rex('ai')
 async def bot(client, message):
     if len(message.command) > 1:
         prompt = " ".join(message.command[1:])
-        response = generator(prompt, max_length=100)
-        await message.reply_text(response[0]['generated_text'])
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": f"{prompt}"}]
+        )
+        reply = response['choices'][0]['message']['content']
+        await message.reply_text(reply)
     else:
         await message.reply_text("Envía un texto después del comando.")
