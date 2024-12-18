@@ -50,7 +50,7 @@ dbtext = '''<b>OYE! NO ESTAS REGISTRADO EN EL BOT USA /START PARA REGISTRARTE¡<
 
 wik = '''<b>Search Wikipedia Result: {busqueda} Result: {result}
 
-Resultado: {resultado}<b>'''
+Resultado: {resultado}</b>'''
 
 
 

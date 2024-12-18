@@ -1,4 +1,5 @@
-from configs._def_main_ import *
+from configs._def_main_ import rex
+from plantillas.plant import wik
 import aiohttp
 from bs4 import BeautifulSoup
 
@@ -7,7 +8,7 @@ async def bot(client, message):
     if len(message.command) < 2:
         await message.reply_text("Por favor, proporciona un término de búsqueda.")
         return
-    
+
     query = " ".join(message.command[1:])
     url = f"https://es.m.wikipedia.org/w/index.php?search={query}&title=Especial%3ABuscar&profile=advanced&fulltext=1&ns0=1&ns100=1&ns104=1"
 
@@ -30,5 +31,5 @@ async def bot(client, message):
     result_link = f"https://es.m.wikipedia.org{result.a['href']}"
     snippet_text = snippet.get_text(strip=True)
 
-    formatted_result = wik.format(busqueda=query, result=f"<a href='{result_link}'>{result_title}</a>", resultado=snippet_text[:1000])
+    formatted_result = wik.format(busqueda=query, result=f"<a href='{result_link}'>{result_title}</a>", resultado=snippet_text)
     await message.reply_text(formatted_result, disable_web_page_preview=True)
