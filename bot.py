@@ -1,13 +1,17 @@
 from configs._def_main_ import *
+from pyrogram import Client
+import logging
 
-load_dotenv(".env")
+apid = 27533879 
+apihash = '80029e88381fe5c63e364687906458a0' 
+token = '7598417720:AAFxF0E1COsem5DY9glYav9urxaGACK1PC8' 
 
 dark = Client(
     "Darkness",
-    api_id=os.getenv('API_ID'),
-    api_hash=os.getenv('API_HASH'),
-    bot_token=os.getenv('BOT_TOKEN'),
-    plugins=dict(root='addons')  
+    api_id=apid,
+    api_hash=apihash,
+    bot_token=token,
+    plugins=dict(root='addons')
 )
 
 @dark.on_callback_query()
@@ -22,5 +26,5 @@ def callback_privates(client, callback_query):
 logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
-    print("Bot on")  
+    print("Bot on")
     dark.run()
