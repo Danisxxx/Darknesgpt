@@ -11,40 +11,46 @@ async def bot(client, message):
     query = " ".join(message.command[1:])
     search_url = f"https://es.m.wikipedia.org/w/index.php?search={query}&title=Especial%3ABuscar&profile=advanced&fulltext=1&ns0=1&ns100=1&ns104=1"
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(search_url) as response:
-            if response.status != 200:
-                await message.reply_text("Hubo un problema al buscar en Wikipedia.")
-                return
-            html_content = await response.text()
+    loading_message = await message.reply_text("Buscando contenido...")
 
-    soup = BeautifulSoup(html_content, 'html.parser')
-    result = soup.find('div', class_='mw-search-result-heading')
-    if not result:
-        await message.reply_text("No se encontraron resultados.")
-        return
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(search_url) as response:
+                if response.status != 200:
+                    await loading_message.edit_text("Hubo un problema al buscar en Wikipedia.")
+                    return
+                html_content = await response.text()
 
-    result_title = result.get_text(strip=True)
-    result_link = f"https://es.m.wikipedia.org{result.a['href']}"
+        soup = BeautifulSoup(html_content, 'html.parser')
+        result = soup.find('div', class_='mw-search-result-heading')
+        if not result:
+            await loading_message.edit_text("No se encontraron resultados.")
+            return
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(result_link) as response:
-            if response.status != 200:
-                await message.reply_text("Hubo un problema al obtener el contenido del artículo.")
-                return
-            article_content = await response.text()
+        result_title = result.get_text(strip=True)
+        result_link = f"https://es.m.wikipedia.org{result.a['href']}"
 
-    article_soup = BeautifulSoup(article_content, 'html.parser')
-    paragraphs = article_soup.find_all('p')
-    full_text = "\n".join([p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True)])
+        async with aiohttp.ClientSession() as session:
+            async with session.get(result_link) as response:
+                if response.status != 200:
+                    await loading_message.edit_text("Hubo un problema al obtener el contenido del artículo.")
+                    return
+                article_content = await response.text()
 
-    if not full_text:
-        await message.reply_text("El artículo no contiene información suficiente.")
-        return
+        article_soup = BeautifulSoup(article_content, 'html.parser')
+        paragraphs = article_soup.find_all('p')
+        full_text = "\n".join([p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True)])
 
-    formatted_result = wik.format(
-        busqueda=query,
-        result=f"<a href='{result_link}'>{result_title}</a>",
-        resultado=full_text
-    )
-    await message.reply_text(formatted_result, disable_web_page_preview=True)
+        if not full_text:
+            await loading_message.edit_text("El artículo no contiene información suficiente.")
+            return
+
+        formatted_result = wik.format(
+            busqueda=query,
+            result=f"<a href='{result_link}'>{result_title}</a>",
+            resultado=full_text
+        )
+        await loading_message.edit_text(formatted_result, disable_web_page_preview=True)
+
+    except Exception as e:
+        await loading_message.edit_text("Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.")
