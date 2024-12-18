@@ -2,7 +2,7 @@ import os
 import shutil
 from configs._def_main_ import *
 
-@rex('delca')
+@rex('delcache')
 async def delca_callback(client, message):
 
     sent_message = await message.reply("<b>Cache eliminando...</b>", reply_to_message_id=message.id)
