@@ -1,1 +1,1 @@
-wik = ONN ✅
+wik = OFF ❌
