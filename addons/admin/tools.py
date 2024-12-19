@@ -2,6 +2,7 @@ from configs._def_main_ import *
 import sqlite3
 from datetime import datetime
 
+# Función para actualizar el estado de la herramienta en tools.txt
 def update_tools_status(tool_name, status):
     tools_file = "plantillas/tools.txt"
     try:
@@ -17,7 +18,7 @@ def update_tools_status(tool_name, status):
             else:
                 updated_lines.append(line)
 
-        if not tool_found:  
+        if not tool_found:  # Si la herramienta no existe en tools.txt, agregarla
             updated_lines.append(f"{tool_name} = {status}\n")
 
         with open(tools_file, "w") as file:
@@ -37,23 +38,24 @@ async def tools_command(client, message):
     tool_name = message.command[1]
     reason = " ".join(message.command[2:]) if len(message.command) > 2 else "No especificado"
 
-    conn = sqlite3.connect("db/user.db")
+    # Validar privilegios del usuario desde la base de datos
+    conn = sqlite3.connect('db/user.db')
     cursor = conn.cursor()
-    user_id = message.from_user.id
-    cursor.execute("SELECT PRIVILEGIOS FROM Users WHERE ID = ?", (user_id,))
-    result = cursor.fetchone()
+    cursor.execute('SELECT PRIVILEGIOS FROM Users WHERE ID = ?', (message.from_user.id,))
+    user_privileges = cursor.fetchone()
     conn.close()
 
-    if not result or result[0] <= 3:
+    if not user_privileges or user_privileges[0] < 3:  # Si privilegios son menores que 3
         await message.reply_text(
             "[後] No cuentas con los privilegios suficientes para realizar esta acción",
             reply_to_message_id=message.id
         )
         return
 
+    # Procesar comandos
     if command == "off":
         if update_tools_status(tool_name, "OFF ❌"):
-            
+            from plantillas.plant import Comm  # Importar plantilla Comm
             formatted_message = Comm.format(
                 tools=tool_name,
                 date=datetime.now().strftime('%d-%m-%Y'),
