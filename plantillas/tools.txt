@@ -1,1 +1,3 @@
 wik = OFF ❌
+Review: {date}
+Razon: {reason}
