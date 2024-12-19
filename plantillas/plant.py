@@ -1,6 +1,6 @@
-start = '''<b>✅ Darkness Gpt is on now!. 
+start = '''<b>🧓🏻 Darkness Gpt > 1.0 versions
 
- 👾Puedes usar Texto prompt para hablar con Darkness Gpt AI. Tambien puedes usar /help para saber todos los coamndos de Darkness Gpt.</b>'''
+[🇪🇸] Puedes Usar Darkness Gpt Ai tocando el boton que duce Command De Abajo Con /help Para mas Informacion Toca en Buttons Info Good Night 💤😴...</b>'''
  
 Perfil = '''<b>
  
@@ -13,27 +13,32 @@ Rank: {rank}
 Baneed: {ban}
 Dev By: <code>@Exzzex</code></b>'''
 
-tools = '''<b>TOOLS [1/1]
-━━━━━━━━━━━━━━━━━
-Tool: Search Google [ OFF ❌ ]
-Cmd: $go
-Reason: No Reason Added
-━━━━━━━━━━━━━━━━━
-Tool: Search Wikipedia [ ONN ]
-Cmd: $wik
-Reason: No Reason Added
-━━━━━━━━━━━━━━━━━</b>'''
+tools = '''<b>Tools [ 1/2]
+━━━━━━━━━━━━
+Search Wikipedia :
+Format > <code>$wik Que es Telegram?</code>
+Status > R: Gold > S: Online! ✅
+━━━━━━━━━━━━
+Search Google:
+Format > <code>$go Que año Viene</code>
+Status > R: Gold > S: Mant! ⚠️
+━━━━━━━━━━━━
+Delete Cache:
+Format > <code>$delcache </code>
+Status > R: Bronce > S: Mant! ⚠️
+━━━━━━━━━━━━</b>'''
 
-tools2 = '''<b>TOOLS [2/2]
-━━━━━━━━━━━━━━━━━
-Tool: Deletr Cache [ OFF ❌ ]
-Cmd: $delca
-Reason: No Reason Added
-━━━━━━━━━━━━━━━━━
-Tool: Search Incognito [ OFF ❌ ]
-Cmd: $inc
-Reason: No Reason Added
-━━━━━━━━━━━━━━━━━</b>'''
+tools2 = '''<b>Tools [ 2/2]
+━━━━━━━━━━━━
+Darkness GPT 1.0 :
+Format > <code>$da Como estas?</code>
+Status > R: Diamond > S: Mant! ⚠️
+━━━━━━━━━━━━
+View Information:
+Format ><code>$my</code>
+Status > R: Bronce > S: Online! ✅
+━━━━━━━━━━━━</b>'''
+
 
 info = '''<b>Darkness GPT INFOR:
 ━━━━━
@@ -48,13 +53,15 @@ Report problems to: @Exzzex</b>'''
 
 dbtext = '''<b>OYE! NO ESTAS REGISTRADO EN EL BOT USA /START PARA REGISTRARTE¡</b>'''
 
+Not_authorize = '''<b>Hello, This chat is not authorized Please purchase a membership 😴💵💸</b>'''
+
 wik = '''<b>Search Wikipedia Result: {busqueda} Result: {result}
 
 Resultado: {resultado}</b>'''
 
-Comm = '''<b>🔴 Tools {tools} Apagado
-[後] Review: {date}
-[後] Razon: {reason}</b>'''
+wiks = '''<b>🔴 Tools <code>{tools}</code> Apagado
+[<a href="tg://user?id=">後</a>] Review: <code>{date}</code>
+[<a href="tg://user?id=">後</a>] Razon: {reason}</b>'''
 
 
 

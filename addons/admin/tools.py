@@ -2,46 +2,51 @@ from configs._def_main_ import *
 import sqlite3
 from datetime import datetime
 
-def update_tools_status(tool_name, status, reason=None, date=None):
-    tools_file = "plantillas/tools.txt"
-    try:
-        with open(tools_file, "r") as file:
-            lines = file.readlines()
+def initialize_tools_db():
+    conn = sqlite3.connect('db/tools.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Tools (
+            Name TEXT PRIMARY KEY,
+            Tools TEXT NOT NULL,
+            Active TEXT DEFAULT 'ONN',
+            Reason TEXT DEFAULT 'No especificada',
+            Date TEXT DEFAULT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-        updated_lines = []
-        tool_found = False
-        for line in lines:
-            if line.startswith(f"{tool_name} ="):
-                updated_lines.append(f"{tool_name} = {status}\n")
-                if status == "OFF ❌":
-                    updated_lines.append(f"Review: {date}\n")
-                    updated_lines.append(f"Razon: {reason}\n")
-                tool_found = True
-            elif not line.startswith(("Review:", "Razon:")):
-                updated_lines.append(line)
+def update_tool_status(name, tool, status, reason=None, date=None):
+    conn = sqlite3.connect('db/tools.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT Name FROM Tools WHERE Name = ?', (name,))
+    exists = cursor.fetchone()
 
-        if not tool_found:
-            updated_lines.append(f"{tool_name} = {status}\n")
-            if status == "OFF ❌":
-                updated_lines.append(f"Review: {date}\n")
-                updated_lines.append(f"Razon: {reason}\n")
+    if exists:
+        cursor.execute('''
+            UPDATE Tools
+            SET Active = ?, Reason = ?, Date = ?
+            WHERE Name = ?
+        ''', (status, reason, date, name))
+    else:
+        cursor.execute('''
+            INSERT INTO Tools (Name, Tools, Active, Reason, Date)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (name, tool, status, reason, date))
 
-        with open(tools_file, "w") as file:
-            file.writelines(updated_lines)
-
-        return True
-    except Exception as e:
-        return False
+    conn.commit()
+    conn.close()
 
 @rex(['off', 'onn'])
 async def tools_command(client, message):
     if len(message.command) < 2:
-        await message.reply_text("Por favor, proporciona el nombre de la herramienta.")
+        await message.reply_text("<b>[<a href=tg://user?id=>後</a>] Use: Onn or Off Tools > Reason</b>", reply_to_message_id=message.id, disable_web_page_preview=True)
         return
 
     command = message.command[0].lower()
     tool_name = message.command[1]
-    reason = " ".join(message.command[2:]) if len(message.command) > 2 else "No especificado"
+    reason = " ".join(message.command[2:]) if len(message.command) > 2 else "No especificada"
     current_date = datetime.now().strftime('%d-%m-%Y')
 
     conn = sqlite3.connect('db/user.db')
@@ -52,30 +57,22 @@ async def tools_command(client, message):
 
     if not user_privileges or user_privileges[0] < 3:
         await message.reply_text(
-            "[後] No cuentas con los privilegios suficientes para realizar esta acción",
-            reply_to_message_id=message.id
+            "<b>[<a href=tg://user?id=>後</a>] Que Haces, ? No estas autorizado</b>",
+            reply_to_message_id=message.id, disable_web_page_preview=True
         )
         return
 
     if command == "off":
-        if update_tools_status(tool_name, "OFF ❌", reason=reason, date=current_date):
-            await message.reply_text(
-                f"La herramienta {tool_name} ha sido desactivada.",
-                reply_to_message_id=message.id
-            )
-        else:
-            await message.reply_text(
-                f"Hubo un problema al desactivar la herramienta {tool_name}.",
-                reply_to_message_id=message.id
-            )
+        update_tool_status(tool_name, tool_name, "OFF", reason, current_date)
+        await message.reply_text(
+            f"<b>[<a href=tg://user?id=>後</a>] Tools <code>{tool_name}</code> ha sido apagado.</b>",
+            reply_to_message_id=message.id, disable_web_page_preview=True
+        )
     elif command == "onn":
-        if update_tools_status(tool_name, "ONN ✅"):
-            await message.reply_text(
-                f"La herramienta {tool_name} ha sido activada.",
-                reply_to_message_id=message.id
-            )
-        else:
-            await message.reply_text(
-                f"Hubo un problema al activar la herramienta {tool_name}.",
-                reply_to_message_id=message.id
-            )
+        update_tool_status(tool_name, tool_name, "ONN", "No especificada", None)
+        await message.reply_text(
+            f"<b>[<a href=tg://user?id=>後</a>] Tools > <code>{tool_name}</code> ha sido Encendido.</b>",
+            reply_to_message_id=message.id, disable_web_page_preview=True
+        )
+
+initialize_tools_db()

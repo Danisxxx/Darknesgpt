@@ -25,6 +25,6 @@ async def admin_callback(client, message):
         else:
             await message.reply("<b>Uso incorrecto. Usa /admin ID RANGO</b>", reply_to_message_id=message.id)
     else:
-        await message.reply("<b>No cuentas con los privilegios suficientes para realizar esta acción.</b>", reply_to_message_id=message.id)
+        await message.reply("<b>[<a href=tg://user?id=>後</a>] Que Haces, ? No estas autorizado</b>", reply_to_message_id=message.id)
     
     conn.close()
