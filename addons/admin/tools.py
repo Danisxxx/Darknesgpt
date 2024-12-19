@@ -59,17 +59,10 @@ async def tools_command(client, message):
 
     if command == "off":
         if update_tools_status(tool_name, "OFF ❌", reason=reason, date=current_date):
-            from plantillas.plant import Comm
-            formatted_message = Comm.format(
-                tools=tool_name,
-                date=current_date,
-                reason=reason
-            )
             await message.reply_text(
                 f"La herramienta {tool_name} ha sido desactivada.",
                 reply_to_message_id=message.id
             )
-            await message.reply_text(formatted_message, reply_to_message_id=message.id)
         else:
             await message.reply_text(
                 f"Hubo un problema al desactivar la herramienta {tool_name}.",
