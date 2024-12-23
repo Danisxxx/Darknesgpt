@@ -83,7 +83,7 @@ onntext2 = '''<b>[⽷] Tools {name} > /{command} Encendido</b>
 <b>Razón:</b> {reason}
 <b>Fecha de activación:</b> {date}'''
 
-onntext3 = '''<b>Uso: .onn <comando></b>'''
+ontext = '''<b>Uso: .onn <comando></b>'''
 
 onntext4 = '''<b>Ese comando no existe en mi DB.</b>'''
 
