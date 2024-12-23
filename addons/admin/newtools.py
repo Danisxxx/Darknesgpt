@@ -16,7 +16,7 @@ def ensure_table_exists():
         cursor = conn.cursor()
         
         create_table_query = """
-        CREATE TABLE IF NOT EXISTS Toolslist (
+        CREATE TABLE IF NOT EXISTS Command (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             command VARCHAR(255) NOT NULL,
@@ -52,7 +52,7 @@ async def add(_, message):
         cursor = conn.cursor()
         
         insert_query = """
-        INSERT INTO Toolslist (name, command, status, reason, owner)
+        INSERT INTO Command (name, command, status, reason, owner)
         VALUES (%s, %s, %s, %s, %s);
         """
         

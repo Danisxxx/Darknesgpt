@@ -29,7 +29,7 @@ async def off(_, message):
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor()
         
-        select_query = "SELECT * FROM Toolslist WHERE name = %s"
+        select_query = "SELECT * FROM Command WHERE name = %s"
         cursor.execute(select_query, (name,))
         tool = cursor.fetchone()
         
@@ -37,7 +37,7 @@ async def off(_, message):
             return await message.reply_text("Ese comando no existe en mi DB.")
         
         update_query = """
-        UPDATE Toolslist 
+        UPDATE Command 
         SET status = 'Apagado', reason = %s, date = %s 
         WHERE name = %s
         """
@@ -66,7 +66,7 @@ async def onn(_, message):
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor()
         
-        select_query = "SELECT * FROM Toolslist WHERE name = %s"
+        select_query = "SELECT * FROM Command WHERE name = %s"
         cursor.execute(select_query, (name,))
         tool = cursor.fetchone()
         
@@ -74,7 +74,7 @@ async def onn(_, message):
             return await message.reply_text("Ese comando no existe en mi DB.")
         
         update_query = """
-        UPDATE Toolslist 
+        UPDATE Command 
         SET status = 'Encendido', reason = NULL, date = NULL 
         WHERE name = %s
         """
