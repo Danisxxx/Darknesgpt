@@ -19,7 +19,7 @@ async def off(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text(offtext3, reply_to_message_id=message.id)
+        return await message.reply_text('''<b>Uso: .off <comando> [razón]</b>''', reply_to_message_id=message.id)
     
     command = args[1]
     reason = args[2] if len(args) > 2 else "<b>No especificada</b>"
@@ -34,13 +34,13 @@ async def off(_, message):
         tool = cursor.fetchone()
         
         if not tool:
-            return await message.reply_text(offtext4, reply_to_message_id=message.id)
+            return await message.reply_text('''<b>Ese comando no existe en mi DB.</b>''', reply_to_message_id=message.id)
         
         status = tool[3]  
         usage = tool[2]
 
         if status == 'inactive':
-            return await message.reply_text(offtext1.format(command=command), reply_to_message_id=message.id)
+            return await message.reply_text(f'''<b>El comando {command} ya está apagado.</b>''', reply_to_message_id=message.id)
         
         update_query = """
         UPDATE Command 
@@ -68,7 +68,7 @@ async def onn(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text(ontext, reply_to_message_id=message.id)
+        return await message.reply_text('''<b>Uso: .onn <comando></b>''', reply_to_message_id=message.id)
     
     command = args[1]
 
@@ -81,13 +81,13 @@ async def onn(_, message):
         tool = cursor.fetchone()
         
         if not tool:
-            return await message.reply_text(onntext4, reply_to_message_id=message.id)
+            return await message.reply_text('''<b>Ese comando no existe en mi DB.</b>''', reply_to_message_id=message.id)
         
         status = tool[3]  
         usage = tool[2]
 
         if status == 'active':
-            return await message.reply_text(onntext1.format(command=command), reply_to_message_id=message.id)
+            return await message.reply_text(f'''<b>El comando {command} ya está encendido.</b>''', reply_to_message_id=message.id)
 
         update_query = """
         UPDATE Command 

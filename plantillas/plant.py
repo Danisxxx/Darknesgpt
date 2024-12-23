@@ -67,25 +67,13 @@ idtext = '''<b>🧓🏻 Darkness Gpt | My Information
 
 • Id -> <code>{id}</code></b>'''
 
-offtext1 = '''<b>El comando {command} ya está apagado.</b>'''
-
 offtext2 = '''<b>[⽷] Tools {name} > /{command} Apagado</b>
 <b>Razón:</b> {reason}
 <b>Fecha de desactivación:</b> {date}'''
 
-offtext3 = '''<b>Uso: .off <comando> [razón]</b>'''
-
-offtext4 = '''<b>Ese comando no existe en mi DB.</b>'''
-
-onntext1 = '''<b>El comando {command} ya está encendido.</b>'''
-
 onntext2 = '''<b>[⽷] Tools {name} > /{command} Encendido</b>
 <b>Razón:</b> {reason}
 <b>Fecha de activación:</b> {date}'''
-
-ontext = '''<b>Uso: .onn <comando></b>'''
-
-onntext4 = '''<b>Ese comando no existe en mi DB.</b>'''
 
 
 
