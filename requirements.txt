@@ -6,3 +6,5 @@ aiohttp
 beautifulsoup4
 tgcrypto
 mysql-connector-python
+pymysql
+
