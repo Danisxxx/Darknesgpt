@@ -1,6 +1,13 @@
 from configs._def_main_ import *
-from datetime import datetime
-from db.date import db_config
+import pymysql
+
+db_config = {
+    "host": "mysql.railway.internal",
+    "user": "root",
+    "password": "JXyNzSbNJJHCbVNbcdvZWxyYwvlvFLwN",
+    "database": "railway",
+    "port": 3306
+}
 
 AUTHORIZED_USER_ID = 7202754124
 
