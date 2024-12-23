@@ -38,12 +38,12 @@ async def off(_, message):
         
         update_query = """
         UPDATE Command 
-        SET status = 'Apagado', reason = %s, date = %s 
+        SET status = 'inactive', reason = %s, date = %s 
         WHERE name = %s
         """
         cursor.execute(update_query, (reason, date_now, name))
         conn.commit()
-        await message.reply_text(f"Tools Name > {name} Apagado <")
+        await message.reply_text(f"Tools Name > {name} Inactivo <")
     except pymysql.MySQLError as err:
         await message.reply_text(f"Error: {err}")
     finally:
@@ -75,12 +75,12 @@ async def onn(_, message):
         
         update_query = """
         UPDATE Command 
-        SET status = 'Encendido', reason = NULL, date = NULL 
+        SET status = 'active', reason = NULL, date = NULL 
         WHERE name = %s
         """
         cursor.execute(update_query, (name,))
         conn.commit()
-        await message.reply_text(f"Tools Name > {name} Encendido <")
+        await message.reply_text(f"Tools Name > {name} Activo <")
     except pymysql.MySQLError as err:
         await message.reply_text(f"Error: {err}")
     finally:
