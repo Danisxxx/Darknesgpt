@@ -17,11 +17,11 @@ async def off(_, message):
     if message.from_user.id != AUTHORIZED_USER_ID:
         return await message.reply_text(f"<b>{Not_authorize}</b>", reply_to_message_id=message.id)
 
-    args = message.text.split(maxsplit=2)
+    args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text("<b>Uso: .off <nombre> [razón]</b>", reply_to_message_id=message.id)
+        return await message.reply_text("<b>Uso: .off <comando> [razón]</b>", reply_to_message_id=message.id)
     
-    name = args[1]
+    command = args[1]
     reason = args[2] if len(args) > 2 else "<b>No especificada</b>"
     date_now = datetime.now().strftime("%Y-%m-%d")
 
@@ -29,24 +29,28 @@ async def off(_, message):
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor()
         
-        select_query = "SELECT * FROM Command WHERE name = %s"
-        cursor.execute(select_query, (name,))
+        select_query = "SELECT * FROM Command WHERE command = %s"
+        cursor.execute(select_query, (command,))
         tool = cursor.fetchone()
         
         if not tool:
             return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.id)
         
+        status = tool[3]  # Aquí se obtiene el estado actual
         usage = tool[2]
+
+        if status == 'inactive':
+            return await message.reply_text(f"<b>El comando {command} ya está apagado.</b>", reply_to_message_id=message.id)
         
         update_query = """
         UPDATE Command 
         SET status = 'inactive', reason = %s, date = %s 
-        WHERE name = %s
+        WHERE command = %s
         """
-        cursor.execute(update_query, (reason, date_now, name))
+        cursor.execute(update_query, (reason, date_now, command))
         conn.commit()
 
-        reply_message_text = f"<b>[⽷] Tools {name} > /{usage} Apagado</b>\n<b>Razón:</b> {reason}\n<b>Fecha de desactivación:</b> {date_now}"
+        reply_message_text = f"<b>[⽷] Tools {tool[1]} > /{usage} Apagado</b>\n<b>Razón:</b> {reason}\n<b>Fecha de desactivación:</b> {date_now}"
         
         await message.reply_text(reply_message_text, reply_to_message_id=message.id)
         
@@ -64,32 +68,36 @@ async def onn(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text("<b>Uso: .onn <nombre></b>", reply_to_message_id=message.id)
+        return await message.reply_text("<b>Uso: .onn <comando></b>", reply_to_message_id=message.id)
     
-    name = args[1]
+    command = args[1]
 
     try:
         conn = pymysql.connect(**db_config)
         cursor = conn.cursor()
         
-        select_query = "SELECT * FROM Command WHERE name = %s"
-        cursor.execute(select_query, (name,))
+        select_query = "SELECT * FROM Command WHERE command = %s"
+        cursor.execute(select_query, (command,))
         tool = cursor.fetchone()
         
         if not tool:
             return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.id)
         
+        status = tool[3]  # Aquí se obtiene el estado actual
         usage = tool[2]
-        
+
+        if status == 'active':
+            return await message.reply_text(f"<b>El comando {command} ya está encendido.</b>", reply_to_message_id=message.id)
+
         update_query = """
         UPDATE Command 
         SET status = 'active', reason = NULL, date = NULL 
-        WHERE name = %s
+        WHERE command = %s
         """
-        cursor.execute(update_query, (name,))
+        cursor.execute(update_query, (command,))
         conn.commit()
 
-        reply_message_text = f"<b>[⽷] Tools {name} > /{usage} Encendido</b>\n<b>Razón:</b> No especificada\n<b>Fecha de activación:</b> {datetime.now().strftime('%Y-%m-%d')}"
+        reply_message_text = f"<b>[⽷] Tools {tool[1]} > /{usage} Encendido</b>\n<b>Razón:</b> No especificada\n<b>Fecha de activación:</b> {datetime.now().strftime('%Y-%m-%d')}"
         
         await message.reply_text(reply_message_text, reply_to_message_id=message.id)
         
