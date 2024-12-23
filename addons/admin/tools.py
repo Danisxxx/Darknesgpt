@@ -68,8 +68,7 @@ async def onn(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text("<b>Uso: .onn <comando></b>", reply_to_message_id=message.id)
-
+        return await message.reply_text('''Uso: .onn comando''', reply_to_message_id=message.id)
     
     command = args[1]
 
