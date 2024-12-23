@@ -1,14 +1,6 @@
 from configs._def_main_ import *
-import pymysql
 from datetime import datetime
-
-db_config = {
-    "host": "mysql.railway.internal",
-    "user": "root",
-    "password": "JXyNzSbNJJHCbVNbcdvZWxyYwvlvFLwN",
-    "database": "railway",
-    "port": 3306
-}
+from db.date import db_config
 
 AUTHORIZED_USER_ID = 7202754124
 
@@ -19,7 +11,7 @@ async def off(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text("<b>Uso: .off <comando> [razón]</b>", reply_to_message_id=message.id)
+        return await message.reply_text(offtext3, reply_to_message_id=message.id)
     
     command = args[1]
     reason = args[2] if len(args) > 2 else "<b>No especificada</b>"
@@ -34,13 +26,13 @@ async def off(_, message):
         tool = cursor.fetchone()
         
         if not tool:
-            return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.id)
+            return await message.reply_text(offtext4, reply_to_message_id=message.id)
         
-        status = tool[3]  # Aquí se obtiene el estado actual
+        status = tool[3]  
         usage = tool[2]
 
         if status == 'inactive':
-            return await message.reply_text(f"<b>El comando {command} ya está apagado.</b>", reply_to_message_id=message.id)
+            return await message.reply_text(offtext1.format(command=command), reply_to_message_id=message.id)
         
         update_query = """
         UPDATE Command 
@@ -50,7 +42,7 @@ async def off(_, message):
         cursor.execute(update_query, (reason, date_now, command))
         conn.commit()
 
-        reply_message_text = f"<b>[⽷] Tools {tool[1]} > /{usage} Apagado</b>\n<b>Razón:</b> {reason}\n<b>Fecha de desactivación:</b> {date_now}"
+        reply_message_text = offtext2.format(name=tool[1], command=usage, reason=reason, date=date_now)
         
         await message.reply_text(reply_message_text, reply_to_message_id=message.id)
         
@@ -68,7 +60,7 @@ async def onn(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text("<b>Uso: .onn <comando></b>", reply_to_message_id=message.id)
+        return await message.reply_text(onntext3, reply_to_message_id=message.id)
     
     command = args[1]
 
@@ -81,13 +73,13 @@ async def onn(_, message):
         tool = cursor.fetchone()
         
         if not tool:
-            return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.id)
+            return await message.reply_text(onntext4, reply_to_message_id=message.id)
         
-        status = tool[3]  # Aquí se obtiene el estado actual
+        status = tool[3]  
         usage = tool[2]
 
         if status == 'active':
-            return await message.reply_text(f"<b>El comando {command} ya está encendido.</b>", reply_to_message_id=message.id)
+            return await message.reply_text(onntext1.format(command=command), reply_to_message_id=message.id)
 
         update_query = """
         UPDATE Command 
@@ -97,7 +89,7 @@ async def onn(_, message):
         cursor.execute(update_query, (command,))
         conn.commit()
 
-        reply_message_text = f"<b>[⽷] Tools {tool[1]} > /{usage} Encendido</b>\n<b>Razón:</b> No especificada\n<b>Fecha de activación:</b> {datetime.now().strftime('%Y-%m-%d')}"
+        reply_message_text = onntext2.format(name=tool[1], command=usage, reason="<b>No especificada</b>", date=datetime.now().strftime('%Y-%m-%d'))
         
         await message.reply_text(reply_message_text, reply_to_message_id=message.id)
         
