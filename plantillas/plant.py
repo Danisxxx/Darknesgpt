@@ -55,6 +55,8 @@ dbtext = '''<b>OYE! NO ESTAS REGISTRADO EN EL BOT USA /START PARA REGISTRARTE¡<
 
 Not_authorize = '''<b>Hello, This chat is not authorized Please purchase a membership 😴💵💸</b>'''
 
+permtext = '''<b>Hi, I'm sorry you don't have enough powers.</b>'''
+
 wik = '''<b>Search Wikipedia Result: {busqueda} Result: {result}
 
 Resultado: {resultado}</b>'''

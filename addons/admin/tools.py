@@ -15,7 +15,7 @@ AUTHORIZED_USER_ID = 7202754124
 @rex('off')
 async def off(_, message):
     if message.from_user.id != AUTHORIZED_USER_ID:
-        return await message.reply_text(f"<b>{Not_authorize}</b>", reply_to_message_id=message.id)
+        return await message.reply_text(f"<b>{permtext}</b>", reply_to_message_id=message.id)
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
@@ -64,7 +64,7 @@ async def off(_, message):
 @rex('onn')
 async def onn(_, message):
     if message.from_user.id != AUTHORIZED_USER_ID:
-        return await message.reply_text(f"<b>{Not_authorize}</b>", reply_to_message_id=message.id)
+        return await message.reply_text(f"<b>{permtext}</b>", reply_to_message_id=message.id)
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
