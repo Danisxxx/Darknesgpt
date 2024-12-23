@@ -63,5 +63,10 @@ wiks = '''<b>🔴 Tools <code>{tools}</code> Apagado
 [<a href="tg://user?id=">後</a>] Review: <code>{date}</code>
 [<a href="tg://user?id=">後</a>] Razon: {reason}</b>'''
 
+idtext = '''<b>🧓🏻 Darkness Gpt | My Information
+
+• Id -> <code>{id}</code></b>'''
+
+
 
 
