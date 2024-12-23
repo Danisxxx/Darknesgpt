@@ -36,6 +36,8 @@ async def off(_, message):
         if not tool:
             return await message.reply_text("Ese comando no existe en mi DB.")
         
+        usage = tool[3]  # Asumiendo que el campo 'usage' es el cuarto en la tabla
+        
         update_query = """
         UPDATE Command 
         SET status = 'inactive', reason = %s, date = %s 
@@ -43,7 +45,18 @@ async def off(_, message):
         """
         cursor.execute(update_query, (reason, date_now, name))
         conn.commit()
-        await message.reply_text(f"Tools Name > {name} Inactivo <")
+
+        reply_message_text = f"""
+        <b>🔴 Herramienta desactivada</b>
+        <b>Comando:</b> {name}
+        <b>Uso:</b> {usage}
+        <b>Estado:</b> Apagado
+        <b>Razón:</b> {reason}
+        <b>Fecha de desactivación:</b> {date_now}
+        """
+        
+        await message.reply_text(reply_message_text, reply_to_message_id=message.message.id)
+        
     except pymysql.MySQLError as err:
         await message.reply_text(f"Error: {err}")
     finally:
@@ -73,6 +86,8 @@ async def onn(_, message):
         if not tool:
             return await message.reply_text("Ese comando no existe en mi DB.")
         
+        usage = tool[3]  # Asumiendo que el campo 'usage' es el cuarto en la tabla
+        
         update_query = """
         UPDATE Command 
         SET status = 'active', reason = NULL, date = NULL 
@@ -80,7 +95,18 @@ async def onn(_, message):
         """
         cursor.execute(update_query, (name,))
         conn.commit()
-        await message.reply_text(f"Tools Name > {name} Activo <")
+
+        reply_message_text = f"""
+        <b>✅ Herramienta activada</b>
+        <b>Comando:</b> {name}
+        <b>Uso:</b> {usage}
+        <b>Estado:</b> Encendido
+        <b>Razón:</b> No especificada
+        <b>Fecha de activación:</b> {datetime.now().strftime('%Y-%m-%d')}
+        """
+        
+        await message.reply_text(reply_message_text, reply_to_message_id=message.message.id)
+        
     except pymysql.MySQLError as err:
         await message.reply_text(f"Error: {err}")
     finally:
