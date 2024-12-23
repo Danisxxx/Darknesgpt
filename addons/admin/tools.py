@@ -23,7 +23,7 @@ async def off(_, message):
     
     name = args[1]
     reason = args[2] if len(args) > 2 else "No especificada"
-    date_now = datetime.now().strftime("%d-%m-%Y")
+    date_now = datetime.now().strftime("%Y-%m-%d")  # Usando formato YYYY-MM-DD
 
     try:
         conn = pymysql.connect(**db_config)
