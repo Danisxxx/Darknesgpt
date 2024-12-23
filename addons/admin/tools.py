@@ -19,7 +19,7 @@ async def off(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text('''<b>Uso: .off <comando> [razón]</b>''', reply_to_message_id=message.id)
+        return await message.reply_text('''<b>Admin: > $off : tools</b>''', reply_to_message_id=message.id)
     
     command = args[1]
     reason = args[2] if len(args) > 2 else "<b>No especificada</b>"
@@ -68,7 +68,7 @@ async def onn(_, message):
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text('''<b>Use: .onn $help</b>''', reply_to_message_id=message.id)
+        return await message.reply_text('''<b>Admin: > $onn : tools</b>''', reply_to_message_id=message.id)
     
     command = args[1]
 
