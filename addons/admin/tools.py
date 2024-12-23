@@ -1,78 +1,89 @@
 from configs._def_main_ import *
-import sqlite3
+import pymysql
 from datetime import datetime
 
-def initialize_tools_db():
-    conn = sqlite3.connect('db/tools.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Tools (
-            Name TEXT PRIMARY KEY,
-            Tools TEXT NOT NULL,
-            Active TEXT DEFAULT 'ONN',
-            Reason TEXT DEFAULT 'No especificada',
-            Date TEXT DEFAULT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+db_config = {
+    "host": "mysql.railway.internal",
+    "user": "root",
+    "password": "JXyNzSbNJJHCbVNbcdvZWxyYwvlvFLwN",
+    "database": "railway",
+    "port": 3306
+}
 
-def update_tool_status(name, tool, status, reason=None, date=None):
-    conn = sqlite3.connect('db/tools.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT Name FROM Tools WHERE Name = ?', (name,))
-    exists = cursor.fetchone()
+AUTHORIZED_USER_ID = 7202754124
 
-    if exists:
-        cursor.execute('''
-            UPDATE Tools
-            SET Active = ?, Reason = ?, Date = ?
-            WHERE Name = ?
-        ''', (status, reason, date, name))
-    else:
-        cursor.execute('''
-            INSERT INTO Tools (Name, Tools, Active, Reason, Date)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (name, tool, status, reason, date))
+@rex('off')
+async def off(_, message):
+    if message.from_user.id != AUTHORIZED_USER_ID:
+        return await message.reply_text(Not_authorize)
 
-    conn.commit()
-    conn.close()
+    args = message.text.split(maxsplit=2)
+    if len(args) < 2:
+        return await message.reply_text("Uso: .off <nombre> [razón]")
+    
+    name = args[1]
+    reason = args[2] if len(args) > 2 else "No especificada"
+    date_now = datetime.now().strftime("%d-%m-%Y")
 
-@rex(['off', 'onn'])
-async def tools_command(client, message):
-    if len(message.command) < 2:
-        await message.reply_text("<b>[<a href=tg://user?id=>後</a>] Use: Onn or Off Tools > Reason</b>", reply_to_message_id=message.id, disable_web_page_preview=True)
-        return
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
+        
+        select_query = "SELECT * FROM Toolslist WHERE name = %s"
+        cursor.execute(select_query, (name,))
+        tool = cursor.fetchone()
+        
+        if not tool:
+            return await message.reply_text("Ese comando no existe en mi DB.")
+        
+        update_query = """
+        UPDATE Toolslist 
+        SET status = 'Apagado', reason = %s, date = %s 
+        WHERE name = %s
+        """
+        cursor.execute(update_query, (reason, date_now, name))
+        conn.commit()
+        await message.reply_text(f"Tools Name > {name} Apagado <")
+    except pymysql.MySQLError as err:
+        await message.reply_text(f"Error: {err}")
+    finally:
+        if conn.open:
+            cursor.close()
+            conn.close()
 
-    command = message.command[0].lower()
-    tool_name = message.command[1]
-    reason = " ".join(message.command[2:]) if len(message.command) > 2 else "No especificada"
-    current_date = datetime.now().strftime('%d-%m-%Y')
+@rex('onn')
+async def onn(_, message):
+    if message.from_user.id != AUTHORIZED_USER_ID:
+        return await message.reply_text(Not_authorize)
 
-    conn = sqlite3.connect('db/user.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT PRIVILEGIOS FROM Users WHERE ID = ?', (message.from_user.id,))
-    user_privileges = cursor.fetchone()
-    conn.close()
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        return await message.reply_text("Uso: .onn <nombre>")
+    
+    name = args[1]
 
-    if not user_privileges or user_privileges[0] < 3:
-        await message.reply_text(
-            "<b>[<a href=tg://user?id=>後</a>] Que Haces, ? No estas autorizado</b>",
-            reply_to_message_id=message.id, disable_web_page_preview=True
-        )
-        return
-
-    if command == "off":
-        update_tool_status(tool_name, tool_name, "OFF", reason, current_date)
-        await message.reply_text(
-            f"<b>[<a href=tg://user?id=>後</a>] Tools <code>{tool_name}</code> ha sido apagado.</b>",
-            reply_to_message_id=message.id, disable_web_page_preview=True
-        )
-    elif command == "onn":
-        update_tool_status(tool_name, tool_name, "ONN", "No especificada", None)
-        await message.reply_text(
-            f"<b>[<a href=tg://user?id=>後</a>] Tools > <code>{tool_name}</code> ha sido Encendido.</b>",
-            reply_to_message_id=message.id, disable_web_page_preview=True
-        )
-
-initialize_tools_db()
+    try:
+        conn = pymysql.connect(**db_config)
+        cursor = conn.cursor()
+        
+        select_query = "SELECT * FROM Toolslist WHERE name = %s"
+        cursor.execute(select_query, (name,))
+        tool = cursor.fetchone()
+        
+        if not tool:
+            return await message.reply_text("Ese comando no existe en mi DB.")
+        
+        update_query = """
+        UPDATE Toolslist 
+        SET status = 'Encendido', reason = NULL, date = NULL 
+        WHERE name = %s
+        """
+        cursor.execute(update_query, (name,))
+        conn.commit()
+        await message.reply_text(f"Tools Name > {name} Encendido <")
+    except pymysql.MySQLError as err:
+        await message.reply_text(f"Error: {err}")
+    finally:
+        if conn.open:
+            cursor.close()
+            conn.close()
