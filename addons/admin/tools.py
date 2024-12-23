@@ -15,11 +15,11 @@ AUTHORIZED_USER_ID = 7202754124
 @rex('off')
 async def off(_, message):
     if message.from_user.id != AUTHORIZED_USER_ID:
-        return await message.reply_text(f"<b>{Not_authorize}</b>", reply_to_message_id=message.message.id)
+        return await message.reply_text(f"<b>{Not_authorize}</b>", reply_to_message_id=message.id)
 
     args = message.text.split(maxsplit=2)
     if len(args) < 2:
-        return await message.reply_text("<b>Uso: .off <nombre> [razón]</b>", reply_to_message_id=message.message.id)
+        return await message.reply_text("<b>Uso: .off <nombre> [razón]</b>", reply_to_message_id=message.id)
     
     name = args[1]
     reason = args[2] if len(args) > 2 else "<b>No especificada</b>"
@@ -34,7 +34,7 @@ async def off(_, message):
         tool = cursor.fetchone()
         
         if not tool:
-            return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.message.id)
+            return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.id)
         
         usage = tool[3]  # Asumiendo que el campo 'usage' es el cuarto en la tabla
         
@@ -47,18 +47,15 @@ async def off(_, message):
         conn.commit()
 
         reply_message_text = f"""
-        <b>🔴 Herramienta desactivada</b>
-        <b>Comando:</b> {name}
-        <b>Estado:</b> Apagado
+        <b>[⽷] Tools {name} > /{usage} Apagado</b>
         <b>Razón:</b> {reason}
         <b>Fecha de desactivación:</b> {date_now}
-        <b>Uso:</b> {usage}
         """
         
-        await message.reply_text(reply_message_text, reply_to_message_id=message.message.id)
+        await message.reply_text(reply_message_text, reply_to_message_id=message.id)
         
     except pymysql.MySQLError as err:
-        await message.reply_text(f"<b>Error:</b> {err}", reply_to_message_id=message.message.id)
+        await message.reply_text(f"<b>Error:</b> {err}", reply_to_message_id=message.id)
     finally:
         if conn.open:
             cursor.close()
@@ -67,11 +64,11 @@ async def off(_, message):
 @rex('onn')
 async def onn(_, message):
     if message.from_user.id != AUTHORIZED_USER_ID:
-        return await message.reply_text(f"<b>{Not_authorize}</b>", reply_to_message_id=message.message.id)
+        return await message.reply_text(f"<b>{Not_authorize}</b>", reply_to_message_id=message.id)
 
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
-        return await message.reply_text("<b>Uso: .onn <nombre></b>", reply_to_message_id=message.message.id)
+        return await message.reply_text("<b>Uso: .onn <nombre></b>", reply_to_message_id=message.id)
     
     name = args[1]
 
@@ -84,7 +81,7 @@ async def onn(_, message):
         tool = cursor.fetchone()
         
         if not tool:
-            return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.message.id)
+            return await message.reply_text("<b>Ese comando no existe en mi DB.</b>", reply_to_message_id=message.id)
         
         usage = tool[3]  # Asumiendo que el campo 'usage' es el cuarto en la tabla
         
@@ -97,18 +94,15 @@ async def onn(_, message):
         conn.commit()
 
         reply_message_text = f"""
-        <b>✅ Herramienta activada</b>
-        <b>Comando:</b> {name}
-        <b>Estado:</b> Encendido
+        <b>[⽷] Tools {name} > /{usage} Encendido</b>
         <b>Razón:</b> No especificada
         <b>Fecha de activación:</b> {datetime.now().strftime('%Y-%m-%d')}
-        <b>Uso:</b> {usage}
         """
         
-        await message.reply_text(reply_message_text, reply_to_message_id=message.message.id)
+        await message.reply_text(reply_message_text, reply_to_message_id=message.id)
         
     except pymysql.MySQLError as err:
-        await message.reply_text(f"<b>Error:</b> {err}", reply_to_message_id=message.message.id)
+        await message.reply_text(f"<b>Error:</b> {err}", reply_to_message_id=message.id)
     finally:
         if conn.open:
             cursor.close()
