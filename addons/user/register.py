@@ -34,10 +34,8 @@ async def register_user(client, message):
     cursor.close()
     connection.close()
 
-    # Verificar si es una respuesta a otro mensaje
-    reply_to_message_id = message.reply_to_message.message_id if message.reply_to_message else None
-
+    # Usar message.id para la respuesta
     await message.reply_text(
         regist.format(username=username),
-        reply_to_message_id=reply_to_message_id
+        reply_to_message_id=message.id
     )
