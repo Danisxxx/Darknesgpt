@@ -13,17 +13,16 @@ async def drop_card(client, message):
             await message.reply("Por favor, responde a un mensaje que contenga una tarjeta.")
             return
 
-        original_message = message.reply_to_message
+        if not message.reply_to_message.text.startswith("CC:"):
+            await message.reply("No se encontró ninguna tarjeta en el mensaje.")
+            return
 
-        # Reenviar el mensaje tal cual al canal
         try:
-            # Reenviar el mensaje completo sin necesidad de acceder al message_id
-            await client.forward_messages(CHANNEL_ID, original_message.chat.id, original_message.message_id)
+            await message.reply_to_message.forward(CHANNEL_ID)
         except Exception as e:
             await message.reply(f"Error al reenviar al canal: {str(e)}")
             return
 
-        # Notificar al owner
         owner_notification = f"El Usuario @{message.from_user.username} envió una Live al canal."
         await client.send_message(OWNER_ID, owner_notification)
 
