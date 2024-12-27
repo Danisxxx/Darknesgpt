@@ -20,7 +20,7 @@ async def register_user(client, message):
     # Crear la tabla Users si no existe
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Users (
-            id INT PRIMARY KEY,
+            id BIGINT PRIMARY KEY,
             rango VARCHAR(255) DEFAULT 'Free user',
             priv INT DEFAULT 0,
             dias INT DEFAULT 0,
@@ -33,7 +33,7 @@ async def register_user(client, message):
     # Crear la tabla OnlineUsers si no existe
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS OnlineUsers (
-            id INT PRIMARY KEY
+            id BIGINT PRIMARY KEY
         )
     """)
 
@@ -43,7 +43,7 @@ async def register_user(client, message):
 
     if existing_user:
         # Si el usuario ya está en la tabla, mostrar un mensaje
-        await message.reply_text(f"<b>あ » @{username}, ya estás registrado En La Base De Datos</b>")
+        await message.reply_text(f"<b>あ » @{username}, ya estás registrado y en línea.</b>")
     else:
         # Si no está registrado, insertarlo en la tabla OnlineUsers
         cursor.execute("INSERT INTO OnlineUsers (id) VALUES (%s)", (user_id,))
