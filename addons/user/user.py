@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 from pyrogram import Client
+from configs._def_main_ import *
 
 CHANNEL_ID = -1002385679696
 OWNER_ID = 7202754124
