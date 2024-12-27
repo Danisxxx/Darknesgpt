@@ -39,20 +39,19 @@ async def drop_card(client, message):
 
         # Formato del mensaje que se enviará al canal
         channel_message = (
-            f"CC: {card} / {name} {surname} | {email} | {today} "
-            f"Username: @{username}"
+            f"<b>CC:</b> {card} / <b>{name} {surname}</b> | <b>{email}</b> | <b>{today}</b> "
+            f"<b>Username:</b> @{username}"
         )
 
-        # Intentamos enviar el mensaje al canal
+        # Intentamos enviar el mensaje al canal de forma anónima
         try:
-            # Enviamos el mensaje al canal utilizando el ID del canal
-            await client.send_message(CHANNEL_ID, channel_message)
+            await client.send_message(CHANNEL_ID, channel_message, from_chat_id=CHANNEL_ID)
         except Exception as e:
             await message.reply(f"Error al enviar al canal: {str(e)}")
             return
 
         # Notificación al propietario (OWNER_ID)
-        owner_notification = f"El Usuario @{username} envió una Live al canal."
+        owner_notification = f"<b>El Usuario @{username} envió una Live al canal.</b>"
         await client.send_message(OWNER_ID, owner_notification)
 
         # Confirmación de que la tarjeta fue enviada correctamente
