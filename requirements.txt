@@ -7,4 +7,4 @@ beautifulsoup4
 tgcrypto
 mysql-connector-python
 pymysql
-
+pytz
