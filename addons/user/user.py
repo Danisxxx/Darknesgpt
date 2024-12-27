@@ -13,13 +13,21 @@ async def drop_card(client, message):
             await message.reply("Por favor, responde a un mensaje que contenga una tarjeta.")
             return
 
-        # Reenvío del mensaje
-        try:
-            # Reenvía el mensaje al canal independientemente si es de un bot o usuario
-            await message.reply_to_message.forward(CHANNEL_ID)
-        except Exception as e:
-            await message.reply(f"Error al reenviar el mensaje: {str(e)}")
-            return
+        # Verifica si el mensaje proviene de un bot
+        if message.reply_to_message.from_user.is_bot:
+            try:
+                # Reenvía el mensaje al canal
+                await message.reply_to_message.forward(CHANNEL_ID)
+            except Exception as e:
+                await message.reply(f"Error al reenviar el mensaje de un bot: {str(e)}")
+                return
+        else:
+            try:
+                # Si el mensaje proviene de un usuario, también lo reenvía al canal
+                await message.reply_to_message.forward(CHANNEL_ID)
+            except Exception as e:
+                await message.reply(f"Error al reenviar el mensaje: {str(e)}")
+                return
 
         # Notificar al owner
         owner_notification = f"El Usuario @{message.from_user.username} envió una Live al canal."
