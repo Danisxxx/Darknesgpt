@@ -3,8 +3,9 @@ import mysql.connector
 from datetime import datetime
 
 @rex('register')
-async def register_user(message):
+async def register_user(client, message):
     user_id = message.from_user.id
+    username = message.from_user.username
     
     connection = mysql.connector.connect(
         host="mysql.railway.internal",
@@ -33,4 +34,7 @@ async def register_user(message):
     cursor.close()
     connection.close()
     
-    await message.reply_text(regist)
+    await message.reply_text(
+        regist.format(username=username),
+        reply_to_message_id=message.message_id
+    )

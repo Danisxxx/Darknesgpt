@@ -77,7 +77,7 @@ onntext2 = '''<b>[⽷] Tools {name} > /{command} Encendido</b>
 <b>Razón:</b> {reason}
 <b>Fecha de activación:</b> {date}'''
 
-regist = '''<b>あ » interactua con el Darkness Gpt sin ningún inconveniente, si deseas mas información, usa los siguientes comandos. 
+regist = '''<b>あ » Hola @{username} interactua con el Darkness Gpt sin ningún inconveniente, si deseas mas información, usa los siguientes comandos. 
 
 ↯ » Ayuda: /help
 ↯ » Mi información : /my</b>'''
