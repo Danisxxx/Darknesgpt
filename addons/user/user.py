@@ -1,59 +1,51 @@
-from datetime import datetime
 import random
-from configs._def_main_ import *
+from datetime import datetime
+from pyrogram import Client
 
-# ///hola/// Configuración del Owner y canal
-OWNER_ID = 7202754124
 CHANNEL_ID = -1002385679696
+OWNER_ID = 7202754124
 
-# ///hola/// Listas de nombres y apellidos aleatorios
-random_names = ["Carlos", "María", "Juan", "Ana", "Luis", "Lucía"]
-random_surnames = ["Pérez", "García", "Rodríguez", "López", "Martínez", "Sánchez"]
+random_names = ["Juan", "Carlos", "Lucía", "Ana", "Pedro"]
+random_surnames = ["González", "Pérez", "López", "Martínez", "Rodríguez"]
 
 @rex('drop')
 async def drop_card(client, message):
-    """
-    Comando .drop que envía la tarjeta al canal configurado.
-    """
-    # Verifica que el comando responda a un mensaje
-    if not message.reply_to_message:
-        await message.reply("Por favor, responde a un mensaje que contenga una tarjeta.")
-        return
+    try:
+        if not message.reply_to_message:
+            await message.reply("Por favor, responde a un mensaje que contenga una tarjeta.")
+            return
 
-    # Extraer el texto del mensaje respondido
-    original_text = message.reply_to_message.text
+        original_text = message.reply_to_message.text
+        card_line = [line for line in original_text.splitlines() if line.startswith("CC:")]
+        if not card_line:
+            await message.reply("No se encontró ninguna tarjeta en el mensaje.")
+            return
 
-    # Buscar la tarjeta en el texto (después de "CC:")
-    card_line = [line for line in original_text.splitlines() if line.startswith("CC:")]
-    if not card_line:
-        await message.reply("No se encontró ninguna tarjeta en el mensaje.")
-        return
+        card = card_line[0].replace("CC:", "").strip()
 
-    # Extrae la tarjeta quitando el "CC: "
-    card = card_line[0].replace("CC:", "").strip()
+        name = random.choice(random_names)
+        surname = random.choice(random_surnames)
+        email = f"{name.lower()}.{surname.lower()}@example.com"
+        today = datetime.now().strftime("%d-%m-%Y")
 
-    # Generar nombre, apellido, correo y fecha aleatorios
-    name = random.choice(random_names)
-    surname = random.choice(random_surnames)
-    email = f"{name.lower()}.{surname.lower()}@example.com"
-    today = datetime.now().strftime("%d-%m-%Y")
+        username = message.from_user.username or "Desconocido"
+        user_id = message.from_user.id
 
-    # Obtener información del usuario que ejecutó el comando
-    username = message.from_user.username or "Desconocido"
-    user_id = message.from_user.id
+        channel_message = (
+            f"CC: {card} / {name} {surname} | {email} | {today} "
+            f"Username: @{username}"
+        )
 
-    # Formatear el mensaje para enviar al canal
-    channel_message = (
-        f"CC: {card} / {name} {surname} | {email} | {today} "
-        f"Username: @{username}"
-    )
+        try:
+            await client.send_message(CHANNEL_ID, channel_message)
+        except Exception as e:
+            await message.reply(f"Error al enviar al canal: {str(e)}")
+            return
 
-    # Enviar el mensaje al canal
-    await client.send_message(CHANNEL_ID, channel_message)
+        owner_notification = f"El Usuario @{username} envió una Live al canal."
+        await client.send_message(OWNER_ID, owner_notification)
 
-    # Notificar al Owner
-    owner_notification = f"El Usuario @{username} envió una Live al canal."
-    await client.send_message(OWNER_ID, owner_notification)
+        await message.reply("La tarjeta ha sido enviada al canal correctamente.")
 
-    # Confirmación para el usuario
-    await message.reply("La tarjeta ha sido enviada al canal correctamente.")
+    except Exception as e:
+        await message.reply(f"Ha ocurrido un error: {str(e)}")
