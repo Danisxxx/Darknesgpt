@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from collections import Counter
 import pytz
 import asyncio
+from configs._def_main_ import *
 
 # ///hola/// Diccionario para contar mensajes de cada usuario
 user_messages = Counter()
@@ -13,12 +14,43 @@ CHANNEL_ID = -1002385679696
 # ///hola/// Zona horaria de Venezuela
 VENEZUELA_TZ = pytz.timezone('America/Caracas')
 
+# ///hola/// Variable global para la hora de corte
+cutoff_hour = 22  # Por defecto, las 10 PM
+
+@rox('time')
+async def set_cutoff_time(client, message):
+    """
+    Configura la hora de corte para dejar de contar mensajes.
+    Uso: Time <hora>
+    """
+    global cutoff_hour
+
+    # ///hola/// Verifica que se haya especificado una hora válida
+    try:
+        hour = int(message.text.split()[1])
+        if 0 <= hour <= 23:
+            cutoff_hour = hour
+            await message.reply(f"La hora de corte ha sido configurada a las {hour}:00 hora Venezuela.")
+        else:
+            await message.reply("Por favor, ingresa una hora válida (entre 0 y 23).")
+    except (IndexError, ValueError):
+        await message.reply("Uso incorrecto. Ejemplo: Time 8")
+
 async def process_message(client, message):
     """
     Procesa los mensajes enviados al canal.
     """
+    global cutoff_hour
+
     # ///hola/// Verifica si el mensaje contiene "Checked By"
     if "Checked By:" in message.text:
+        # ///hola/// Obtiene la hora actual en Venezuela
+        now = datetime.now(VENEZUELA_TZ)
+
+        # ///hola/// Si la hora actual es mayor o igual a la hora de corte, no cuenta más mensajes
+        if now.hour >= cutoff_hour:
+            return
+
         # ///hola/// Extrae el username y el ID del usuario
         checked_by_line = [line for line in message.text.splitlines() if "Checked By:" in line][0]
         username = checked_by_line.split("[")[1].split("]")[0]  # Extrae el username
@@ -59,15 +91,17 @@ async def send_daily_summary(client):
 
 async def schedule_daily_summary(client):
     """
-    Programa el envío del resumen diario a las 10 PM hora Venezuela.
+    Programa el envío del resumen diario a la hora de corte.
     """
+    global cutoff_hour
+
     while True:
-        # ///hola/// Calcula el tiempo hasta las 10 PM
+        # ///hola/// Calcula el tiempo hasta la hora de corte
         now = datetime.now(VENEZUELA_TZ)
-        next_run = (now + timedelta(days=1)).replace(hour=22, minute=0, second=0, microsecond=0)
+        next_run = (now + timedelta(days=1)).replace(hour=cutoff_hour, minute=0, second=0, microsecond=0)
         sleep_time = (next_run - now).total_seconds()
 
-        # ///hola/// Espera hasta las 10 PM
+        # ///hola/// Espera hasta la hora de corte
         await asyncio.sleep(sleep_time)
 
         # ///hola/// Envía el resumen diario
