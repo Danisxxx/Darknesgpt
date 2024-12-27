@@ -1,90 +1,59 @@
-from datetime import datetime, timedelta
-from collections import Counter
-import pytz
-import asyncio
+from datetime import datetime
+import random
 from configs._def_main_ import *
 
-# ///hola/// Diccionario para contar mensajes de cada usuario
-user_messages = Counter()
-
-# ///hola/// Owner ID y canal donde llegan los mensajes
+# ///hola/// Configuración del Owner y canal
 OWNER_ID = 7202754124
 CHANNEL_ID = -1002385679696
 
-# ///hola/// Zona horaria de Venezuela
-VENEZUELA_TZ = pytz.timezone('America/Caracas')
+# ///hola/// Listas de nombres y apellidos aleatorios
+random_names = ["Carlos", "María", "Juan", "Ana", "Luis", "Lucía"]
+random_surnames = ["Pérez", "García", "Rodríguez", "López", "Martínez", "Sánchez"]
 
-# ///hola/// Variable global para la hora de corte
-cutoff_hour = 22  # Por defecto, las 10 PM
-
-@rex('time')
-async def set_cutoff_time(client, message):
+@rex('drop')
+async def drop_card(client, message):
     """
-    Configura la hora de corte con el comando Time <hora>.
+    Comando .drop que envía la tarjeta al canal con el formato solicitado.
     """
-    global cutoff_hour
-    try:
-        # ///hola/// Obtiene la hora proporcionada por el usuario
-        new_hour = int(message.text.split()[1])
-        if 0 <= new_hour <= 23:
-            cutoff_hour = new_hour
-            await message.reply(f"La hora de corte ha sido configurada a las {new_hour}:00 hora Venezuela.")
-        else:
-            await message.reply("Por favor, ingresa una hora válida entre 0 y 23.")
-    except (IndexError, ValueError):
-        await message.reply("Uso incorrecto del comando. Ejemplo: Time 8")
+    # Verifica que el comando responda a un mensaje
+    if not message.reply_to_message:
+        await message.reply("Por favor, responde a un mensaje que contenga una tarjeta.")
+        return
 
-async def process_message(client, message):
-    """
-    Procesa los mensajes enviados al canal.
-    """
-    # ///hola/// Verifica si el mensaje contiene "Checked By"
-    if "Checked By:" in message.text:
-        # ///hola/// Extrae el nombre, username e ID del usuario
-        checked_by_line = [line for line in message.text.splitlines() if "Checked By:" in line][0]
-        name = checked_by_line.split(":")[1].split("[")[0].strip()  # Extrae el nombre
-        username = message.from_user.username or "Desconocido"  # Obtiene el username
-        user_id = message.from_user.id  # Obtiene el ID del usuario
+    # Extraer el texto del mensaje respondido
+    original_text = message.reply_to_message.text
 
-        # ///hola/// Actualiza el contador de mensajes del usuario
-        user_messages[(name, username, user_id)] += 1
+    # Buscar la tarjeta en el texto (después de "CC:")
+    card_line = [line for line in original_text.splitlines() if line.startswith("CC:")]
+    if not card_line:
+        await message.reply("No se encontró ninguna tarjeta en el mensaje.")
+        return
 
-        # ///hola/// Cuenta total del día para el usuario
-        total_messages = user_messages[(name, username, user_id)]
+    # Extrae la tarjeta quitando el "CC: "
+    card = card_line[0].replace("CC:", "").strip()
 
-        # ///hola/// Formato del mensaje al Owner
-        notification = (
-            f"Name = {name} = Username = @{username} - ID = {user_id}\n"
-            f"El Usuario @{username} - {user_id} Dropeo Una Live. En total del día lleva {total_messages}."
-        )
-        await client.send_message(OWNER_ID, notification)
+    # Generar nombre, apellido, correo y fecha aleatorios
+    name = random.choice(random_names)
+    surname = random.choice(random_surnames)
+    email = f"{name.lower()}.{surname.lower()}@example.com"
+    today = datetime.now().strftime("%d-%m-%Y")
 
-async def send_daily_summary(client):
-    """
-    Enviar resumen diario de usuarios que enviaron mensajes al canal.
-    """
-    global cutoff_hour
+    # Obtener información del usuario que ejecutó el comando
+    username = message.from_user.username or "Desconocido"
+    user_id = message.from_user.id
 
-    while True:
-        # ///hola/// Obtiene la hora actual en Venezuela
-        now = datetime.now(VENEZUELA_TZ)
-        next_run = (now + timedelta(days=1)).replace(hour=cutoff_hour, minute=0, second=0, microsecond=0)
-        sleep_time = (next_run - now).total_seconds()
+    # Formatear el mensaje para enviar al canal
+    channel_message = (
+        f"CC: {card} / {name} {surname} | {email} | {today} "
+        f"Username: @{username}"
+    )
 
-        # ///hola/// Espera hasta la hora configurada
-        await asyncio.sleep(sleep_time)
+    # Enviar el mensaje al canal
+    await client.send_message(CHANNEL_ID, channel_message)
 
-        # ///hola/// Genera la lista de usuarios ordenados por cantidad de mensajes
-        today = now.strftime('%d-%m-%Y')
-        sorted_users = user_messages.most_common()
-        summary = [
-            f"Name = {user[0]} = Username = @{user[1]} - ID = {user[2]} Dropeo {count} Live(s)"
-            for user, count in sorted_users
-        ]
-        summary_message = f"Tiempo Finalizado {today}:\n\n" + "\n".join(summary)
+    # Notificar al Owner
+    owner_notification = f"El Usuario @{username} envió una Live al canal."
+    await client.send_message(OWNER_ID, owner_notification)
 
-        # ///hola/// Envía el resumen al Owner
-        await client.send_message(OWNER_ID, summary_message)
-
-        # ///hola/// Limpia el contador para el próximo día
-        user_messages.clear()
+    # Confirmación para el usuario
+    await message.reply("La tarjeta ha sido enviada al canal correctamente.")
