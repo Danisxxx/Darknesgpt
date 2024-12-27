@@ -21,16 +21,16 @@ async def drop_card(client, message):
 
         # Reenviar el mensaje tal cual al canal
         try:
-            await client.send_message(CHANNEL_ID, original_text)
+            await client.forward_messages(CHANNEL_ID, message.chat.id, message.reply_to_message.message_id)
         except Exception as e:
-            await message.reply(f"Error al enviar al canal: {str(e)}")
+            await message.reply(f"Error al reenviar al canal: {str(e)}")
             return
 
         # Notificar al owner
         owner_notification = f"El Usuario @{message.from_user.username} envió una Live al canal."
         await client.send_message(OWNER_ID, owner_notification)
 
-        await message.reply("La tarjeta ha sido enviada al canal correctamente.")
+        await message.reply("La tarjeta ha sido reenviada al canal correctamente.")
 
     except Exception as e:
         await message.reply(f"Ha ocurrido un error: {str(e)}")
