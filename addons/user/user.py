@@ -18,15 +18,20 @@ async def drop_card(client, message):
             return
 
         try:
-            await message.reply_to_message.forward(CHANNEL_ID)
+            # Reenviar el mensaje si es de cualquier bot
+            if message.reply_to_message.from_user and message.reply_to_message.from_user.is_bot:
+                await message.reply_to_message.forward(CHANNEL_ID)
+            else:
+                await message.reply("El mensaje no proviene de un bot.")
         except Exception as e:
-            await message.reply(f"Error al reenviar al canal: {str(e)}")
+            await message.reply(f"Error al reenviar el mensaje: {str(e)}")
             return
 
+        # Notificar al owner
         owner_notification = f"El Usuario @{message.from_user.username} envió una Live al canal."
         await client.send_message(OWNER_ID, owner_notification)
 
-        await message.reply("La tarjeta ha sido reenviada al canal correctamente.")
+        await message.reply("La tarjeta ha sido enviada al canal correctamente.")
 
     except Exception as e:
         await message.reply(f"Ha ocurrido un error: {str(e)}")
