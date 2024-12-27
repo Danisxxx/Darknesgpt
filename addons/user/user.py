@@ -40,20 +40,22 @@ async def process_message(client, message):
     """
     # ///hola/// Verifica si el mensaje contiene "Checked By"
     if "Checked By:" in message.text:
-        # ///hola/// Extrae el username y el ID del usuario
+        # ///hola/// Extrae el nombre, username e ID del usuario
         checked_by_line = [line for line in message.text.splitlines() if "Checked By:" in line][0]
-        username = checked_by_line.split("[")[1].split("]")[0]  # Extrae el username
+        name = checked_by_line.split(":")[1].split("[")[0].strip()  # Extrae el nombre
+        username = message.from_user.username or "Desconocido"  # Obtiene el username
         user_id = message.from_user.id  # Obtiene el ID del usuario
 
         # ///hola/// Actualiza el contador de mensajes del usuario
-        user_messages[username] += 1
+        user_messages[(name, username, user_id)] += 1
 
         # ///hola/// Cuenta total del día para el usuario
-        total_messages = user_messages[username]
+        total_messages = user_messages[(name, username, user_id)]
 
-        # ///hola/// Mensaje de notificación al Owner
+        # ///hola/// Formato del mensaje al Owner
         notification = (
-            f"El Usuario @{username} Ha Dropeado 1 Live. En total del día lleva {total_messages}."
+            f"Name = {name} = Username = @{username} - ID = {user_id}\n"
+            f"El Usuario @{username} - {user_id} Dropeo Una Live. En total del día lleva {total_messages}."
         )
         await client.send_message(OWNER_ID, notification)
 
@@ -75,8 +77,11 @@ async def send_daily_summary(client):
         # ///hola/// Genera la lista de usuarios ordenados por cantidad de mensajes
         today = now.strftime('%d-%m-%Y')
         sorted_users = user_messages.most_common()
-        summary = [f"@{user} Dropeo {count} Live" for user, count in sorted_users]
-        summary_message = f"Total del día {today}:\n\n" + "\n".join(summary)
+        summary = [
+            f"Name = {user[0]} = Username = @{user[1]} - ID = {user[2]} Dropeo {count} Live(s)"
+            for user, count in sorted_users
+        ]
+        summary_message = f"Tiempo Finalizado {today}:\n\n" + "\n".join(summary)
 
         # ///hola/// Envía el resumen al Owner
         await client.send_message(OWNER_ID, summary_message)
