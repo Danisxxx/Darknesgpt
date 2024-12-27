@@ -1,10 +1,13 @@
 from datetime import datetime
 import random
 from configs._def_main_ import *
+from pyrogram import Client
 
-# ///hola/// Configuración del Owner y canal
+# ///hola/// Configuración del Owner, canal y el bot administrador
 OWNER_ID = 7202754124
 CHANNEL_ID = -1002385679696
+BOT_TOKEN = "7598417720:AAFxF0E1COsem5DY9glYav9urxaGACK1PC8"  # Reemplaza con el token del bot @Exzzex_bot
+EXZZEX_BOT = Client("exzzex_bot", bot_token=BOT_TOKEN)
 
 # ///hola/// Listas de nombres y apellidos aleatorios
 random_names = ["Carlos", "María", "Juan", "Ana", "Luis", "Lucía"]
@@ -13,7 +16,7 @@ random_surnames = ["Pérez", "García", "Rodríguez", "López", "Martínez", "S�
 @rex('drop')
 async def drop_card(client, message):
     """
-    Comando .drop que envía la tarjeta al canal con el formato solicitado.
+    Comando .drop que envía la tarjeta al canal usando el bot @Exzzex_bot.
     """
     # Verifica que el comando responda a un mensaje
     if not message.reply_to_message:
@@ -48,8 +51,9 @@ async def drop_card(client, message):
         f"Username: @{username}"
     )
 
-    # Enviar el mensaje al canal
-    await client.send_message(CHANNEL_ID, channel_message)
+    # Enviar el mensaje al canal usando el bot @Exzzex_bot
+    async with EXZZEX_BOT:
+        await EXZZEX_BOT.send_message(CHANNEL_ID, channel_message)
 
     # Notificar al Owner
     owner_notification = f"El Usuario @{username} envió una Live al canal."
