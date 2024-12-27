@@ -17,7 +17,7 @@ VENEZUELA_TZ = pytz.timezone('America/Caracas')
 # ///hola/// Variable global para la hora de corte
 cutoff_hour = 22  # Por defecto, las 10 PM
 
-@rox('time')
+@rex('time')
 async def set_cutoff_time(client, message):
     """
     Configura la hora de corte para dejar de contar mensajes.
