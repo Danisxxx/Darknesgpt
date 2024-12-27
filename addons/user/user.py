@@ -21,6 +21,7 @@ async def drop_card(client, message):
 
         # Reenviar el mensaje tal cual al canal
         try:
+            # Reenviamos el mensaje usando el message_id correcto
             await client.forward_messages(CHANNEL_ID, message.chat.id, message.reply_to_message.message_id)
         except Exception as e:
             await message.reply(f"Error al reenviar al canal: {str(e)}")
