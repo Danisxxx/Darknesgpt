@@ -13,16 +13,10 @@ async def drop_card(client, message):
             await message.reply("Por favor, responde a un mensaje que contenga una tarjeta.")
             return
 
-        if not message.reply_to_message.text.startswith("CC:"):
-            await message.reply("No se encontró ninguna tarjeta en el mensaje.")
-            return
-
+        # Reenvío del mensaje
         try:
-            # Reenviar el mensaje si es de cualquier bot
-            if message.reply_to_message.from_user and message.reply_to_message.from_user.is_bot:
-                await message.reply_to_message.forward(CHANNEL_ID)
-            else:
-                await message.reply("El mensaje no proviene de un bot.")
+            # Reenvía el mensaje al canal independientemente si es de un bot o usuario
+            await message.reply_to_message.forward(CHANNEL_ID)
         except Exception as e:
             await message.reply(f"Error al reenviar el mensaje: {str(e)}")
             return
